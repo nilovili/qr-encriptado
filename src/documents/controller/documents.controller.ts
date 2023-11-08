@@ -1,11 +1,15 @@
 // documents.controller.ts
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { DocumentsService } from '../services/documents.service';
+import { ArchivosService } from '../services/archivos.service';
 
 @Controller('documents')
 export class DocumentsController {
-  constructor(private documentsService: DocumentsService) {}
+  constructor(
+    private documentsService: DocumentsService,
+    private archivosService: ArchivosService,
+  ) {}
 
   @Get('generate')
   async generateDocument(@Res() res: Response) {
@@ -24,5 +28,10 @@ export class DocumentsController {
       console.log(error);
       res.status(500).send('Error al generar el documento.');
     }
+  }
+
+  @Get(':nombreArchivo')
+  leerArchivo(@Param('nombreArchivo') nombreArchivo: string): string {
+    return this.archivosService.leerArchivoTxt(nombreArchivo);
   }
 }
